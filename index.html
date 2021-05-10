@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Microsecond resolution clock</title>
+	<style>
+		body {
+			font-family: monospace;
+			font-size: 6vw;
+			font-weight: 700;
+			text-align: center;
+		}
+	</style>
+</head>
+<body>
+<div id="clock"></div>
+<script>
+	const throttle = 8;
+	const div = document.getElementById('clock');
+	const text = document.createTextNode('');
+	div.appendChild(text);
+	
+	const zeroPad = (value, length = 2) => {
+		return String(value).padStart(length, '0');
+	};
+	
+	const displayTime = (frame) => {
+		if (frame < throttle) {
+			return window.requestAnimationFrame(() => displayTime(frame + 1));
+		}
+		const microtime = performance.timing.navigationStart + performance.now();
+		const now = new Date(microtime);
+		const microseconds = Math.trunc((microtime - now.getTime()) * 100);
+		
+		text.nodeValue = `${now.getUTCFullYear()}-${zeroPad(now.getUTCMonth() + 1)}-${zeroPad(now.getUTCDate())} ${zeroPad(now.getUTCHours())}:${zeroPad(now.getUTCMinutes())}:${zeroPad(now.getUTCSeconds())}.${zeroPad(now.getUTCMilliseconds(), 3)}.${zeroPad(microseconds)}`;
+		
+		return window.requestAnimationFrame(() => displayTime(0));
+	};
+	
+	displayTime(0);
+</script>
+</body>
+</html>
