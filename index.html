@@ -15,7 +15,16 @@
 <body>
 <div id="clock"></div>
 <script>
-	const throttle = 8;
+	const parseIntDefault = (str, def) => {
+		const num = parseInt(str, 10);
+		if (isFinite(num)) {
+			return num;
+		}
+		
+		return def;
+	};
+	
+	const throttle = Math.max(0, parseIntDefault(window.location.search.slice(1), 0));
 	const div = document.getElementById('clock');
 	const text = document.createTextNode('');
 	div.appendChild(text);
